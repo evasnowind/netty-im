@@ -1,4 +1,4 @@
-package com.prayerlaputa.im.study;
+package com.prayerlaputa.im.study.client;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 public class NettyClient {
 
     public static final int MAX_RETRY = 5;
+    private static final String HOST = "127.0.0.1";
+    private static final int PORT = 8000;
 
     public static void main(String[] args) {
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -28,6 +30,8 @@ public class NettyClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     public void initChannel(SocketChannel ch) {
+                        ch.pipeline()
+                                .addLast(new FirstClientHandler());
                     }
                 })
                 /*
@@ -46,7 +50,7 @@ public class NettyClient {
                 .option(ChannelOption.TCP_NODELAY, true);
 
         // 4.建立连接
-        connect(bootstrap, "juejin.im", 80, MAX_RETRY);
+        connect(bootstrap, HOST, PORT, MAX_RETRY);
 
     }
 

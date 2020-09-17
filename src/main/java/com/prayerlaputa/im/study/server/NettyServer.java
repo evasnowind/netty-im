@@ -1,4 +1,4 @@
-package com.prayerlaputa.im.study;
+package com.prayerlaputa.im.study.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -14,6 +14,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 public class NettyServer {
 
     private static final int BEGIN_PORT = 8000;
+    private static final int PORT = 8000;
 
     public static void main(String[] args) {
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -58,11 +59,12 @@ public class NettyServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
-
+                        ch.pipeline()
+                                .addLast(new FirstServerHandler());
                     }
                 });
 
-        bind(serverBootstrap, 1000);
+        bind(serverBootstrap, PORT);
     }
 
     private static void bind(final ServerBootstrap serverBootstrap, final int port) {
