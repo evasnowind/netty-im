@@ -3,7 +3,9 @@ package com.prayerlaputa.im.study.server;
 import com.prayerlaputa.im.study.protocol.Packet;
 import com.prayerlaputa.im.study.protocol.PacketCodeC;
 import com.prayerlaputa.im.study.protocol.request.LoginRequestPacket;
+import com.prayerlaputa.im.study.protocol.request.MessageRequestPacket;
 import com.prayerlaputa.im.study.protocol.response.LoginResponsePacket;
+import com.prayerlaputa.im.study.protocol.response.MessageResponsePacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -22,12 +24,11 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println(new Date() + ": 客户端开始登录……");
+        ByteBuf requestByteBuf = (ByteBuf) msg;
 
-        ByteBuf byteBuf = (ByteBuf) msg;
-
-        Packet packet = PacketCodeC.getInstance().decode(byteBuf);
+        Packet packet = PacketCodeC.getInstance().decode(requestByteBuf);
         if (packet instanceof LoginRequestPacket) {
+            System.out.println(new Date() + ": 收到客户端登录请求……");
             // 登录流程
             LoginRequestPacket loginRequestPacket = (LoginRequestPacket) packet;
 
@@ -44,6 +45,15 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
             // 登录响应
             ByteBuf responseByteBuf = PacketCodeC.getInstance().encode(ctx.alloc(), loginResponsePacket);
+            ctx.channel().writeAndFlush(responseByteBuf);
+        } else if (packet instanceof MessageRequestPacket) {
+            MessageRequestPacket messageRequestPacket = (MessageRequestPacket) packet;
+
+            MessageResponsePacket messageResponsePacket = new MessageResponsePacket();
+            System.out.println(new Date() + ": 收到客户端消息: " + messageRequestPacket.getMessage());
+            messageResponsePacket.setMessage("服务端回复【" + messageRequestPacket.getMessage() + "】");
+
+            ByteBuf responseByteBuf = PacketCodeC.getInstance().encode(ctx.alloc(), messageResponsePacket);
             ctx.channel().writeAndFlush(responseByteBuf);
         }
     }

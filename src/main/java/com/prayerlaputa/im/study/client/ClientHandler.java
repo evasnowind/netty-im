@@ -4,11 +4,13 @@ import com.prayerlaputa.im.study.protocol.Packet;
 import com.prayerlaputa.im.study.protocol.PacketCodeC;
 import com.prayerlaputa.im.study.protocol.request.LoginRequestPacket;
 import com.prayerlaputa.im.study.protocol.response.LoginResponsePacket;
+import com.prayerlaputa.im.study.protocol.response.MessageResponsePacket;
+import com.prayerlaputa.im.study.util.LoginUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-import java.nio.ByteBuffer;
+import javax.print.attribute.standard.Media;
 import java.util.Date;
 import java.util.UUID;
 
@@ -42,10 +44,14 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         if (packet instanceof LoginResponsePacket) {
             LoginResponsePacket loginResponsePacket = (LoginResponsePacket) packet;
             if (loginResponsePacket.isSuccess()) {
+                LoginUtil.markAsLogin(ctx.channel());
                 System.out.println(new Date() + ": 客户端登录成功");
             } else {
                 System.out.println(new Date() + ": 客户端登录失败，原因：" + loginResponsePacket.getReason());
             }
+        } else if (packet instanceof MessageResponsePacket) {
+            MessageResponsePacket messageResponsePacket = (MessageResponsePacket) packet;
+            System.out.println(new Date() + ": 收到服务端的消息: " + messageResponsePacket.getMessage());
         }
     }
 }

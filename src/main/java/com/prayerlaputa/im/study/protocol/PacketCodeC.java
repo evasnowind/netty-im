@@ -2,7 +2,9 @@ package com.prayerlaputa.im.study.protocol;
 
 import com.prayerlaputa.im.study.protocol.command.Command;
 import com.prayerlaputa.im.study.protocol.request.LoginRequestPacket;
+import com.prayerlaputa.im.study.protocol.request.MessageRequestPacket;
 import com.prayerlaputa.im.study.protocol.response.LoginResponsePacket;
+import com.prayerlaputa.im.study.protocol.response.MessageResponsePacket;
 import com.prayerlaputa.im.study.serialize.Serializer;
 import com.prayerlaputa.im.study.serialize.impl.JSONSerializer;
 import io.netty.buffer.ByteBuf;
@@ -30,6 +32,8 @@ public class PacketCodeC {
         packetTypeMap = new HashMap<>();
         packetTypeMap.put(Command.LOGIN_REQUEST, LoginRequestPacket.class);
         packetTypeMap.put(Command.LOGIN_RESPONSE, LoginResponsePacket.class);
+        packetTypeMap.put(Command.MESSAGE_REQUEST, MessageRequestPacket.class);
+        packetTypeMap.put(Command.MESSAGE_RESPONSE, MessageResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer jsonSerializer = new JSONSerializer();
