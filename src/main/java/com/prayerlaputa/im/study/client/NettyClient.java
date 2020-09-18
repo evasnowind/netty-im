@@ -31,7 +31,7 @@ public class NettyClient {
                     @Override
                     public void initChannel(SocketChannel ch) {
                         ch.pipeline()
-                                .addLast(new FirstClientHandler());
+                                .addLast(new ClientHandler());
                     }
                 })
                 /*

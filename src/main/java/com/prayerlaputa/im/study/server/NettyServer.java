@@ -7,8 +7,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
+
+import java.util.Date;
 
 
 public class NettyServer {
@@ -31,7 +31,7 @@ public class NettyServer {
                         /*
                         childHandler()用于指定处理新连接数据的读写处理逻辑，handler()用于指定在服务端启动过程中的一些逻辑，通常情况下呢，我们用不着这个方法。
                          */
-                        System.out.println("服务端启动中");
+                        System.out.println(new Date() + ": 服务端启动中");
                     }
                 })
 
@@ -60,7 +60,7 @@ public class NettyServer {
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
                         ch.pipeline()
-                                .addLast(new FirstServerHandler());
+                                .addLast(new ServerHandler());
                     }
                 });
 
