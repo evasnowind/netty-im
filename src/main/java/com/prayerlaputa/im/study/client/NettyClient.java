@@ -1,5 +1,9 @@
 package com.prayerlaputa.im.study.client;
 
+import com.prayerlaputa.im.study.client.handler.LoginResponseHandler;
+import com.prayerlaputa.im.study.client.handler.MessageResponseHandler;
+import com.prayerlaputa.im.study.codec.PacketDecoder;
+import com.prayerlaputa.im.study.codec.PacketEncoder;
 import com.prayerlaputa.im.study.protocol.PacketCodeC;
 import com.prayerlaputa.im.study.protocol.request.MessageRequestPacket;
 import com.prayerlaputa.im.study.util.LoginUtil;
@@ -37,8 +41,14 @@ public class NettyClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     public void initChannel(SocketChannel ch) {
+                        //利用Netty的channelPipeline机制重写
+//                        ch.pipeline().addLast(new ClientHandler());
                         ch.pipeline()
-                                .addLast(new ClientHandler());
+                                .addLast(new PacketDecoder())
+                                .addLast(new LoginResponseHandler())
+                                .addLast(new MessageResponseHandler())
+                                .addLast(new PacketEncoder());
+
                     }
                 })
                 /*
@@ -77,7 +87,7 @@ public class NettyClient {
         bootstrap.connect(host, port).addListener(future -> {
             if (future.isSuccess()) {
                 System.out.println(new Date() + ": 连接成功，启动控制台线程……");
-                Channel channel = ((ChannelFuture)future).channel();
+                Channel channel = ((ChannelFuture) future).channel();
                 startConsoleThread(channel);
             } else if (retry == 0) {
                 System.err.println("重试次数已用完，放弃连接！");
@@ -100,7 +110,7 @@ public class NettyClient {
 
     private static void startConsoleThread(Channel channel) {
         new Thread(() -> {
-            while(!Thread.interrupted()) {
+            while (!Thread.interrupted()) {
                 if (LoginUtil.hasLogin(channel)) {
                     System.out.println("输入消息发送至服务端: ");
                     Scanner sc = new Scanner(System.in);

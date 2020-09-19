@@ -1,5 +1,9 @@
 package com.prayerlaputa.im.study.server;
 
+import com.prayerlaputa.im.study.codec.PacketDecoder;
+import com.prayerlaputa.im.study.codec.PacketEncoder;
+import com.prayerlaputa.im.study.server.handler.LoginRequestHandler;
+import com.prayerlaputa.im.study.server.handler.MessageRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -59,8 +63,13 @@ public class NettyServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
+                        //利用Netty提供的ChannelPipeline机制，重写
+//                        ch.pipeline().addLast(new ServerHandler());
                         ch.pipeline()
-                                .addLast(new ServerHandler());
+                                .addLast(new PacketDecoder())
+                                .addLast(new LoginRequestHandler())
+                                .addLast(new MessageRequestHandler())
+                                .addLast(new PacketEncoder());
                     }
                 });
 

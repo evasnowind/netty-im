@@ -1,4 +1,4 @@
-package com.prayerlaputa.im.study.server;
+package com.prayerlaputa.im.study.server.handler;
 
 import com.prayerlaputa.im.study.protocol.Packet;
 import com.prayerlaputa.im.study.protocol.PacketCodeC;

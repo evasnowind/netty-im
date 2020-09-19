@@ -1,4 +1,4 @@
-package com.prayerlaputa.im.study.client;
+package com.prayerlaputa.im.study.client.handler.test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
