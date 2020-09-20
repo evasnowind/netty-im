@@ -4,6 +4,7 @@ import com.prayerlaputa.im.study.client.handler.LoginResponseHandler;
 import com.prayerlaputa.im.study.client.handler.MessageResponseHandler;
 import com.prayerlaputa.im.study.codec.PacketDecoder;
 import com.prayerlaputa.im.study.codec.PacketEncoder;
+import com.prayerlaputa.im.study.codec.Splitter;
 import com.prayerlaputa.im.study.protocol.PacketCodeC;
 import com.prayerlaputa.im.study.protocol.request.MessageRequestPacket;
 import com.prayerlaputa.im.study.util.LoginUtil;
@@ -42,8 +43,9 @@ public class NettyClient {
                     @Override
                     public void initChannel(SocketChannel ch) {
                         //利用Netty的channelPipeline机制重写
-//                        ch.pipeline().addLast(new ClientHandler());
+//                        ch.pipeline().addLast(new FirstClientHandler());
                         ch.pipeline()
+                                .addLast(new Splitter())
                                 .addLast(new PacketDecoder())
                                 .addLast(new LoginResponseHandler())
                                 .addLast(new MessageResponseHandler())

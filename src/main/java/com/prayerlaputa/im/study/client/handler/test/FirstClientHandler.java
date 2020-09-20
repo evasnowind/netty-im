@@ -23,11 +23,16 @@ public class FirstClientHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext context) {
         System.out.println(new Date() + ": 客户端写出数据");
 
-        //1. 获取数据
-        ByteBuf buffer = getByteBuf(context);
-        //2. 写数据
-        context.channel()
-                .writeAndFlush(buffer);
+        //演示半包问题：如果不加上拆包器，连着发消息将会出现半包
+        for (int i = 0; i < 1000; i++) {
+            //1. 获取数据
+            ByteBuf buffer = getByteBuf(context);
+
+            //2. 写数据
+            context.channel()
+                    .writeAndFlush(buffer);
+        }
+
     }
 
     private ByteBuf getByteBuf(ChannelHandlerContext context) {
