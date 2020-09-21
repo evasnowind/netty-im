@@ -6,4 +6,5 @@ package com.prayerlaputa.im.study.constval;
  */
 public class IMConst {
     public static final String CLIENT_LOGIN = "login";
+    public static final String SESSION = "session";
 }

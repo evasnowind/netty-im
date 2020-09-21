@@ -1,6 +1,7 @@
 package com.prayerlaputa.im.study.attribute;
 
 import com.prayerlaputa.im.study.constval.IMConst;
+import com.prayerlaputa.im.study.server.session.Session;
 import io.netty.util.AttributeKey;
 
 /**
@@ -9,4 +10,5 @@ import io.netty.util.AttributeKey;
  */
 public interface Attributes {
     AttributeKey<Boolean> LOGIN = AttributeKey.newInstance(IMConst.CLIENT_LOGIN);
+    AttributeKey<Session> SESSION = AttributeKey.newInstance(IMConst.SESSION);
 }

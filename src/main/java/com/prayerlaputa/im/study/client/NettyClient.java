@@ -5,11 +5,11 @@ import com.prayerlaputa.im.study.client.handler.MessageResponseHandler;
 import com.prayerlaputa.im.study.codec.PacketDecoder;
 import com.prayerlaputa.im.study.codec.PacketEncoder;
 import com.prayerlaputa.im.study.codec.Splitter;
-import com.prayerlaputa.im.study.protocol.PacketCodeC;
+import com.prayerlaputa.im.study.protocol.request.LoginRequestPacket;
 import com.prayerlaputa.im.study.protocol.request.MessageRequestPacket;
 import com.prayerlaputa.im.study.util.LoginUtil;
+import com.prayerlaputa.im.study.util.SessionUtil;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -38,6 +38,21 @@ public class NettyClient {
                 .group(workerGroup)
                 // 2.指定 IO 类型为 NIO
                 .channel(NioSocketChannel.class)
+
+                /*
+                attr() 方法可以给客户端 Channel，也就是NioSocketChannel绑定自定义属性，然后我们可以通过channel.attr()取出这个属性
+                 */
+                .attr(AttributeKey.newInstance("clientName"), "nettyClient")
+                /*
+                给连接设置一些 TCP 底层相关的属性。
+                ChannelOption.CONNECT_TIMEOUT_MILLIS 表示连接的超时时间，超过这个时间还是建立不上的话则代表连接失败
+                ChannelOption.SO_KEEPALIVE 表示是否开启 TCP 底层心跳机制，true 为开启
+                ChannelOption.TCP_NODELAY 表示是否开始 Nagle 算法，true 表示关闭，false 表示开启，通俗地说，如果要求高实时性，
+                有数据发送时就马上发送，就设置为 true 关闭，如果需要减少发送次数减少网络交互，就设置为 false 开启
+                 */
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+                .option(ChannelOption.SO_KEEPALIVE, true)
+                .option(ChannelOption.TCP_NODELAY, true)
                 // 3.IO 处理逻辑
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
@@ -52,21 +67,7 @@ public class NettyClient {
                                 .addLast(new PacketEncoder());
 
                     }
-                })
-                /*
-                attr() 方法可以给客户端 Channel，也就是NioSocketChannel绑定自定义属性，然后我们可以通过channel.attr()取出这个属性
-                 */
-                .attr(AttributeKey.newInstance("clientName"), "nettyClient")
-                /*
-                给连接设置一些 TCP 底层相关的属性。
-                ChannelOption.CONNECT_TIMEOUT_MILLIS 表示连接的超时时间，超过这个时间还是建立不上的话则代表连接失败
-                ChannelOption.SO_KEEPALIVE 表示是否开启 TCP 底层心跳机制，true 为开启
-                ChannelOption.TCP_NODELAY 表示是否开始 Nagle 算法，true 表示关闭，false 表示开启，通俗地说，如果要求高实时性，
-                有数据发送时就马上发送，就设置为 true 关闭，如果需要减少发送次数减少网络交互，就设置为 false 开启
-                 */
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.TCP_NODELAY, true);
+                });
 
         // 4.建立连接
         connect(bootstrap, HOST, PORT, MAX_RETRY);
@@ -111,19 +112,33 @@ public class NettyClient {
     }
 
     private static void startConsoleThread(Channel channel) {
+        Scanner sc = new Scanner(System.in);
+
         new Thread(() -> {
             while (!Thread.interrupted()) {
-                if (LoginUtil.hasLogin(channel)) {
-                    System.out.println("输入消息发送至服务端: ");
-                    Scanner sc = new Scanner(System.in);
-                    String line = sc.nextLine();
-
-                    MessageRequestPacket packet = new MessageRequestPacket();
-                    packet.setMessage(line);
-                    ByteBuf byteBuf = PacketCodeC.getInstance().encode(channel.alloc(), packet);
-                    channel.writeAndFlush(byteBuf);
+                if (!SessionUtil.hasLogin(channel)) {
+                    System.out.print("输入用户名登录: ");
+                    String username = sc.nextLine();
+                    LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
+                    loginRequestPacket.setUserName(username);
+                    loginRequestPacket.setPassword("pwd");
+                    //发送登录请求
+                    channel.writeAndFlush(loginRequestPacket);
+                    waitForLoginResponse();
+                } else {
+                    String toUserId = sc.next();
+                    String message = sc.next();
+                    channel.writeAndFlush(new MessageRequestPacket(toUserId, message));
                 }
             }
         }).start();
+    }
+
+    private static void waitForLoginResponse() {
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
