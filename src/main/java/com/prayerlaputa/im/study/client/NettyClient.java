@@ -1,6 +1,10 @@
 package com.prayerlaputa.im.study.client;
 
+import com.prayerlaputa.im.study.client.console.ConsoleCommandManager;
+import com.prayerlaputa.im.study.client.console.LoginConsoleCommand;
+import com.prayerlaputa.im.study.client.handler.CreateGroupResponseHandler;
 import com.prayerlaputa.im.study.client.handler.LoginResponseHandler;
+import com.prayerlaputa.im.study.client.handler.LogoutResponseHandler;
 import com.prayerlaputa.im.study.client.handler.MessageResponseHandler;
 import com.prayerlaputa.im.study.codec.PacketDecoder;
 import com.prayerlaputa.im.study.codec.PacketEncoder;
@@ -63,7 +67,9 @@ public class NettyClient {
                                 .addLast(new Splitter())
                                 .addLast(new PacketDecoder())
                                 .addLast(new LoginResponseHandler())
+                                .addLast(new LogoutResponseHandler())
                                 .addLast(new MessageResponseHandler())
+                                .addLast(new CreateGroupResponseHandler())
                                 .addLast(new PacketEncoder());
 
                     }
@@ -112,23 +118,16 @@ public class NettyClient {
     }
 
     private static void startConsoleThread(Channel channel) {
-        Scanner sc = new Scanner(System.in);
+        ConsoleCommandManager consoleCommandManager = new ConsoleCommandManager();
+        LoginConsoleCommand loginConsoleCommand = new LoginConsoleCommand();
+        Scanner scanner = new Scanner(System.in);
 
         new Thread(() -> {
             while (!Thread.interrupted()) {
                 if (!SessionUtil.hasLogin(channel)) {
-                    System.out.print("输入用户名登录: ");
-                    String username = sc.nextLine();
-                    LoginRequestPacket loginRequestPacket = new LoginRequestPacket();
-                    loginRequestPacket.setUserName(username);
-                    loginRequestPacket.setPassword("pwd");
-                    //发送登录请求
-                    channel.writeAndFlush(loginRequestPacket);
-                    waitForLoginResponse();
+                   loginConsoleCommand.exec(scanner, channel);
                 } else {
-                    String toUserId = sc.next();
-                    String message = sc.next();
-                    channel.writeAndFlush(new MessageRequestPacket(toUserId, message));
+                    consoleCommandManager.exec(scanner, channel);
                 }
             }
         }).start();

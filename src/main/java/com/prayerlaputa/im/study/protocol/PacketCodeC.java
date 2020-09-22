@@ -1,9 +1,13 @@
 package com.prayerlaputa.im.study.protocol;
 
 import com.prayerlaputa.im.study.protocol.command.Command;
+import com.prayerlaputa.im.study.protocol.request.CreateGroupRequestPacket;
 import com.prayerlaputa.im.study.protocol.request.LoginRequestPacket;
+import com.prayerlaputa.im.study.protocol.request.LogoutRequestPacket;
 import com.prayerlaputa.im.study.protocol.request.MessageRequestPacket;
+import com.prayerlaputa.im.study.protocol.response.CreateGroupResponsePacket;
 import com.prayerlaputa.im.study.protocol.response.LoginResponsePacket;
+import com.prayerlaputa.im.study.protocol.response.LogoutResponsePacket;
 import com.prayerlaputa.im.study.protocol.response.MessageResponsePacket;
 import com.prayerlaputa.im.study.serialize.Serializer;
 import com.prayerlaputa.im.study.serialize.impl.JSONSerializer;
@@ -34,6 +38,10 @@ public class PacketCodeC {
         packetTypeMap.put(Command.LOGIN_RESPONSE, LoginResponsePacket.class);
         packetTypeMap.put(Command.MESSAGE_REQUEST, MessageRequestPacket.class);
         packetTypeMap.put(Command.MESSAGE_RESPONSE, MessageResponsePacket.class);
+        packetTypeMap.put(Command.LOGOUT_REQUEST, LogoutRequestPacket.class);
+        packetTypeMap.put(Command.LOGOUT_RESPONSE, LogoutResponsePacket.class);
+        packetTypeMap.put(Command.CREATE_GROUP_REQUEST, CreateGroupRequestPacket.class);
+        packetTypeMap.put(Command.CREATE_GROUP_RESPONSE, CreateGroupResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer jsonSerializer = new JSONSerializer();

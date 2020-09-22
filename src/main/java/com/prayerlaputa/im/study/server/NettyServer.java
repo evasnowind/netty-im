@@ -4,7 +4,9 @@ import com.prayerlaputa.im.study.codec.PacketDecoder;
 import com.prayerlaputa.im.study.codec.PacketEncoder;
 import com.prayerlaputa.im.study.codec.Splitter;
 import com.prayerlaputa.im.study.server.handler.AuthHandler;
+import com.prayerlaputa.im.study.server.handler.CreateGroupRequestHandler;
 import com.prayerlaputa.im.study.server.handler.LoginRequestHandler;
+import com.prayerlaputa.im.study.server.handler.LogoutRequestHandler;
 import com.prayerlaputa.im.study.server.handler.MessageRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -74,6 +76,8 @@ public class NettyServer {
                                 .addLast(new LoginRequestHandler())
                                 .addLast(new AuthHandler())
                                 .addLast(new MessageRequestHandler())
+                                .addLast(new CreateGroupRequestHandler())
+                                .addLast(new LogoutRequestHandler())
                                 .addLast(new PacketEncoder());
                     }
                 });
