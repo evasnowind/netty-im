@@ -3,6 +3,7 @@ package com.prayerlaputa.im.study.client;
 import com.prayerlaputa.im.study.client.console.ConsoleCommandManager;
 import com.prayerlaputa.im.study.client.console.LoginConsoleCommand;
 import com.prayerlaputa.im.study.client.handler.CreateGroupResponseHandler;
+import com.prayerlaputa.im.study.client.handler.GroupMessageResponseHandler;
 import com.prayerlaputa.im.study.client.handler.JoinGroupResponseHandler;
 import com.prayerlaputa.im.study.client.handler.ListGroupMembersResponseHandler;
 import com.prayerlaputa.im.study.client.handler.LoginResponseHandler;
@@ -34,7 +35,7 @@ public class NettyClient {
 
     public static final int MAX_RETRY = 5;
     private static final String HOST = "127.0.0.1";
-    private static final int PORT = 8000;
+    private static final int PORT = 18000;
 
     public static void main(String[] args) {
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -81,6 +82,8 @@ public class NettyClient {
                                 .addLast(new QuitGroupResponseHandler())
                                 // 获取群成员响应处理器
                                 .addLast(new ListGroupMembersResponseHandler())
+                                // 群消息响应
+                                .addLast(new GroupMessageResponseHandler())
                                 // 登出响应处理器
                                 .addLast(new LogoutResponseHandler())
                                 .addLast(new PacketEncoder());

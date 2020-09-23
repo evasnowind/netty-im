@@ -3,6 +3,7 @@ package com.prayerlaputa.im.study.server.handler;
 import com.prayerlaputa.im.study.protocol.request.JoinGroupRequestPacket;
 import com.prayerlaputa.im.study.protocol.response.JoinGroupResponsePacket;
 import com.prayerlaputa.im.study.util.SessionUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
@@ -11,7 +12,13 @@ import io.netty.channel.group.ChannelGroup;
  * @author chenglong.yu
  * created on 2020/9/22
  */
+@ChannelHandler.Sharable
 public class JoinGroupRequestHandler extends SimpleChannelInboundHandler<JoinGroupRequestPacket> {
+
+    public static final JoinGroupRequestHandler INSTANCE = new JoinGroupRequestHandler();
+
+    private JoinGroupRequestHandler() {}
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, JoinGroupRequestPacket joinGroupRequestPacket) throws Exception {
         // 1. 获取群对应的 channelGroup
@@ -34,6 +41,6 @@ public class JoinGroupRequestHandler extends SimpleChannelInboundHandler<JoinGro
             joinGroupResponsePacket.setReason("没有找到对应群组！");
         }
         // 3. 发送消息
-        ctx.channel().writeAndFlush(joinGroupResponsePacket);
+        ctx.writeAndFlush(joinGroupResponsePacket);
     }
 }

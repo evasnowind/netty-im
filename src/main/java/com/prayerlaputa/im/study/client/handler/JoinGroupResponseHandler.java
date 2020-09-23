@@ -1,6 +1,7 @@
 package com.prayerlaputa.im.study.client.handler;
 
 import com.prayerlaputa.im.study.protocol.response.JoinGroupResponsePacket;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 

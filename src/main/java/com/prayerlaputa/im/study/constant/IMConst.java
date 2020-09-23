@@ -1,4 +1,4 @@
-package com.prayerlaputa.im.study.constval;
+package com.prayerlaputa.im.study.constant;
 
 /**
  * @author chenglong.yu

@@ -2,6 +2,7 @@ package com.prayerlaputa.im.study.protocol;
 
 import com.prayerlaputa.im.study.protocol.command.Command;
 import com.prayerlaputa.im.study.protocol.request.CreateGroupRequestPacket;
+import com.prayerlaputa.im.study.protocol.request.GroupMessageRequestPacket;
 import com.prayerlaputa.im.study.protocol.request.JoinGroupRequestPacket;
 import com.prayerlaputa.im.study.protocol.request.ListGroupMembersRequestPacket;
 import com.prayerlaputa.im.study.protocol.request.LoginRequestPacket;
@@ -9,6 +10,7 @@ import com.prayerlaputa.im.study.protocol.request.LogoutRequestPacket;
 import com.prayerlaputa.im.study.protocol.request.MessageRequestPacket;
 import com.prayerlaputa.im.study.protocol.request.QuitGroupRequestPacket;
 import com.prayerlaputa.im.study.protocol.response.CreateGroupResponsePacket;
+import com.prayerlaputa.im.study.protocol.response.GroupMessageResponsePacket;
 import com.prayerlaputa.im.study.protocol.response.JoinGroupResponsePacket;
 import com.prayerlaputa.im.study.protocol.response.ListGroupMembersResponsePacket;
 import com.prayerlaputa.im.study.protocol.response.LoginResponsePacket;
@@ -61,6 +63,9 @@ public class PacketCodeC {
         //退出群组消息
         packetTypeMap.put(Command.QUIT_GROUP_REQUEST, QuitGroupRequestPacket.class);
         packetTypeMap.put(Command.QUIT_GROUP_RESPONSE, QuitGroupResponsePacket.class);
+        //群组消息
+        packetTypeMap.put(Command.GROUP_MESSAGE_REQUEST, GroupMessageRequestPacket.class);
+        packetTypeMap.put(Command.GROUP_MESSAGE_RESPONSE, GroupMessageResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer jsonSerializer = new JSONSerializer();

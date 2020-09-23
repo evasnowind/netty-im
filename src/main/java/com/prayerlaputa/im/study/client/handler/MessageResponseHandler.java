@@ -9,7 +9,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * created on 2020/9/19
  */
 public class MessageResponseHandler extends SimpleChannelInboundHandler<MessageResponsePacket> {
-
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, MessageResponsePacket messageResponsePacket) throws Exception {
         String fromUserId = messageResponsePacket.getFromUserId();

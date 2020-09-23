@@ -1,16 +1,10 @@
 package com.prayerlaputa.im.study.server;
 
-import com.prayerlaputa.im.study.codec.PacketDecoder;
-import com.prayerlaputa.im.study.codec.PacketEncoder;
+import com.prayerlaputa.im.study.codec.PacketCodecHandler;
 import com.prayerlaputa.im.study.codec.Splitter;
 import com.prayerlaputa.im.study.server.handler.AuthHandler;
-import com.prayerlaputa.im.study.server.handler.CreateGroupRequestHandler;
-import com.prayerlaputa.im.study.server.handler.JoinGroupRequestHandler;
-import com.prayerlaputa.im.study.server.handler.ListGroupMembersRequestHandler;
+import com.prayerlaputa.im.study.server.handler.IMHandler;
 import com.prayerlaputa.im.study.server.handler.LoginRequestHandler;
-import com.prayerlaputa.im.study.server.handler.LogoutRequestHandler;
-import com.prayerlaputa.im.study.server.handler.MessageRequestHandler;
-import com.prayerlaputa.im.study.server.handler.QuitGroupRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -24,8 +18,7 @@ import java.util.Date;
 
 public class NettyServer {
 
-    private static final int BEGIN_PORT = 8000;
-    private static final int PORT = 8000;
+    private static final int PORT = 18000;
 
     public static void main(String[] args) {
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -70,29 +63,14 @@ public class NettyServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
-                        //利用Netty提供的ChannelPipeline机制，重写
-//                        ch.pipeline().addLast(new FirstServerHandler());
                         ch.pipeline()
-//                                .addLast(new LifeCircleTestHandler())
                                 .addLast(new Splitter())
-                                .addLast(new PacketDecoder())
+                                .addLast(PacketCodecHandler.INSTANCE)
                                 // 登录请求处理器
-                                .addLast(new LoginRequestHandler())
-                                //鉴权
-                                .addLast(new AuthHandler())
-                                // 单聊消息请求处理器
-                                .addLast(new MessageRequestHandler())
-                                // 创建群请求处理器
-                                .addLast(new CreateGroupRequestHandler())
-                                // 加群请求处理器
-                                .addLast(new JoinGroupRequestHandler())
-                                // 退群请求处理器
-                                .addLast(new QuitGroupRequestHandler())
-                                // 获取群成员请求处理器
-                                .addLast(new ListGroupMembersRequestHandler())
-                                // 登出请求处理器
-                                .addLast(new LogoutRequestHandler())
-                                .addLast(new PacketEncoder());
+                                .addLast(LoginRequestHandler.INSTANCE)
+                                .addLast(AuthHandler.INSTANCE)
+                                //此处通过IMHandler缩短事件传播路径
+                                .addLast(IMHandler.INSTANCE);
                     }
                 });
 

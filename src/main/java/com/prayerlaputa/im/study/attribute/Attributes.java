@@ -1,6 +1,6 @@
 package com.prayerlaputa.im.study.attribute;
 
-import com.prayerlaputa.im.study.constval.IMConst;
+import com.prayerlaputa.im.study.constant.IMConst;
 import com.prayerlaputa.im.study.server.session.Session;
 import io.netty.util.AttributeKey;
 

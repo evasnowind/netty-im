@@ -13,7 +13,6 @@ import java.util.Date;
  * created on 2020/9/19
  */
 public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginResponsePacket> {
-
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LoginResponsePacket loginResponsePacket) throws Exception {
         String userId = loginResponsePacket.getUserId();

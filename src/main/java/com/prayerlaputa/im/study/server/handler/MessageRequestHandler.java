@@ -5,14 +5,24 @@ import com.prayerlaputa.im.study.protocol.response.MessageResponsePacket;
 import com.prayerlaputa.im.study.server.session.Session;
 import com.prayerlaputa.im.study.util.SessionUtil;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+
+import java.util.Date;
 
 /**
  * @author chenglong.yu
  * created on 2020/9/19
  */
+@ChannelHandler.Sharable
 public class MessageRequestHandler extends SimpleChannelInboundHandler<MessageRequestPacket> {
+
+    public static final MessageRequestHandler INSTANCE = new MessageRequestHandler();
+
+    private MessageRequestHandler() {
+
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MessageRequestPacket messageRequestPacket) throws Exception {
@@ -30,7 +40,12 @@ public class MessageRequestHandler extends SimpleChannelInboundHandler<MessageRe
 
         // 4.将消息发送给消息接收方
         if (null != toUserChannel && SessionUtil.hasLogin(toUserChannel)) {
-            toUserChannel.writeAndFlush(messageResponsePacket);
+            toUserChannel.writeAndFlush(messageResponsePacket)
+                    .addListener(future -> {
+                        if (future.isDone()) {
+                            System.out.println(new Date() + "发送消息结束！");
+                        }
+                    });
         } else {
             System.err.println("[" + messageRequestPacket.getToUserId() + "] 不在线，发送失败!");
         }
