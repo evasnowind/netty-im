@@ -3,9 +3,12 @@ package com.prayerlaputa.im.study.client;
 import com.prayerlaputa.im.study.client.console.ConsoleCommandManager;
 import com.prayerlaputa.im.study.client.console.LoginConsoleCommand;
 import com.prayerlaputa.im.study.client.handler.CreateGroupResponseHandler;
+import com.prayerlaputa.im.study.client.handler.JoinGroupResponseHandler;
+import com.prayerlaputa.im.study.client.handler.ListGroupMembersResponseHandler;
 import com.prayerlaputa.im.study.client.handler.LoginResponseHandler;
 import com.prayerlaputa.im.study.client.handler.LogoutResponseHandler;
 import com.prayerlaputa.im.study.client.handler.MessageResponseHandler;
+import com.prayerlaputa.im.study.client.handler.QuitGroupResponseHandler;
 import com.prayerlaputa.im.study.codec.PacketDecoder;
 import com.prayerlaputa.im.study.codec.PacketEncoder;
 import com.prayerlaputa.im.study.codec.Splitter;
@@ -66,10 +69,20 @@ public class NettyClient {
                         ch.pipeline()
                                 .addLast(new Splitter())
                                 .addLast(new PacketDecoder())
+                                // 登录响应处理器
                                 .addLast(new LoginResponseHandler())
-                                .addLast(new LogoutResponseHandler())
+                                // 收消息处理器
                                 .addLast(new MessageResponseHandler())
+                                // 创建群响应处理器
                                 .addLast(new CreateGroupResponseHandler())
+                                // 加群响应处理器
+                                .addLast(new JoinGroupResponseHandler())
+                                // 退群响应处理器
+                                .addLast(new QuitGroupResponseHandler())
+                                // 获取群成员响应处理器
+                                .addLast(new ListGroupMembersResponseHandler())
+                                // 登出响应处理器
+                                .addLast(new LogoutResponseHandler())
                                 .addLast(new PacketEncoder());
 
                     }

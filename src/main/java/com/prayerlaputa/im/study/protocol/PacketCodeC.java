@@ -2,13 +2,19 @@ package com.prayerlaputa.im.study.protocol;
 
 import com.prayerlaputa.im.study.protocol.command.Command;
 import com.prayerlaputa.im.study.protocol.request.CreateGroupRequestPacket;
+import com.prayerlaputa.im.study.protocol.request.JoinGroupRequestPacket;
+import com.prayerlaputa.im.study.protocol.request.ListGroupMembersRequestPacket;
 import com.prayerlaputa.im.study.protocol.request.LoginRequestPacket;
 import com.prayerlaputa.im.study.protocol.request.LogoutRequestPacket;
 import com.prayerlaputa.im.study.protocol.request.MessageRequestPacket;
+import com.prayerlaputa.im.study.protocol.request.QuitGroupRequestPacket;
 import com.prayerlaputa.im.study.protocol.response.CreateGroupResponsePacket;
+import com.prayerlaputa.im.study.protocol.response.JoinGroupResponsePacket;
+import com.prayerlaputa.im.study.protocol.response.ListGroupMembersResponsePacket;
 import com.prayerlaputa.im.study.protocol.response.LoginResponsePacket;
 import com.prayerlaputa.im.study.protocol.response.LogoutResponsePacket;
 import com.prayerlaputa.im.study.protocol.response.MessageResponsePacket;
+import com.prayerlaputa.im.study.protocol.response.QuitGroupResponsePacket;
 import com.prayerlaputa.im.study.serialize.Serializer;
 import com.prayerlaputa.im.study.serialize.impl.JSONSerializer;
 import io.netty.buffer.ByteBuf;
@@ -34,14 +40,27 @@ public class PacketCodeC {
 
     private PacketCodeC() {
         packetTypeMap = new HashMap<>();
+        //登录请求
         packetTypeMap.put(Command.LOGIN_REQUEST, LoginRequestPacket.class);
         packetTypeMap.put(Command.LOGIN_RESPONSE, LoginResponsePacket.class);
+        //文本消息
         packetTypeMap.put(Command.MESSAGE_REQUEST, MessageRequestPacket.class);
         packetTypeMap.put(Command.MESSAGE_RESPONSE, MessageResponsePacket.class);
+        //登出消息包
         packetTypeMap.put(Command.LOGOUT_REQUEST, LogoutRequestPacket.class);
         packetTypeMap.put(Command.LOGOUT_RESPONSE, LogoutResponsePacket.class);
+        //创建群组消息
         packetTypeMap.put(Command.CREATE_GROUP_REQUEST, CreateGroupRequestPacket.class);
         packetTypeMap.put(Command.CREATE_GROUP_RESPONSE, CreateGroupResponsePacket.class);
+        //列出群组成员消息
+        packetTypeMap.put(Command.LIST_GROUP_MEMBERS_REQUEST, ListGroupMembersRequestPacket.class);
+        packetTypeMap.put(Command.LIST_GROUP_MEMBERS_RESPONSE, ListGroupMembersResponsePacket.class);
+        //加入群组消息
+        packetTypeMap.put(Command.JOIN_GROUP_REQUEST, JoinGroupRequestPacket.class);
+        packetTypeMap.put(Command.JOIN_GROUP_RESPONSE, JoinGroupResponsePacket.class);
+        //退出群组消息
+        packetTypeMap.put(Command.QUIT_GROUP_REQUEST, QuitGroupRequestPacket.class);
+        packetTypeMap.put(Command.QUIT_GROUP_RESPONSE, QuitGroupResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer jsonSerializer = new JSONSerializer();

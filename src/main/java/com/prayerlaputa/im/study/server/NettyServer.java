@@ -5,9 +5,12 @@ import com.prayerlaputa.im.study.codec.PacketEncoder;
 import com.prayerlaputa.im.study.codec.Splitter;
 import com.prayerlaputa.im.study.server.handler.AuthHandler;
 import com.prayerlaputa.im.study.server.handler.CreateGroupRequestHandler;
+import com.prayerlaputa.im.study.server.handler.JoinGroupRequestHandler;
+import com.prayerlaputa.im.study.server.handler.ListGroupMembersRequestHandler;
 import com.prayerlaputa.im.study.server.handler.LoginRequestHandler;
 import com.prayerlaputa.im.study.server.handler.LogoutRequestHandler;
 import com.prayerlaputa.im.study.server.handler.MessageRequestHandler;
+import com.prayerlaputa.im.study.server.handler.QuitGroupRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -73,10 +76,21 @@ public class NettyServer {
 //                                .addLast(new LifeCircleTestHandler())
                                 .addLast(new Splitter())
                                 .addLast(new PacketDecoder())
+                                // 登录请求处理器
                                 .addLast(new LoginRequestHandler())
+                                //鉴权
                                 .addLast(new AuthHandler())
+                                // 单聊消息请求处理器
                                 .addLast(new MessageRequestHandler())
+                                // 创建群请求处理器
                                 .addLast(new CreateGroupRequestHandler())
+                                // 加群请求处理器
+                                .addLast(new JoinGroupRequestHandler())
+                                // 退群请求处理器
+                                .addLast(new QuitGroupRequestHandler())
+                                // 获取群成员请求处理器
+                                .addLast(new ListGroupMembersRequestHandler())
+                                // 登出请求处理器
                                 .addLast(new LogoutRequestHandler())
                                 .addLast(new PacketEncoder());
                     }
