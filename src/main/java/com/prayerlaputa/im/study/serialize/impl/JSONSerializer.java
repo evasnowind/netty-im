@@ -2,7 +2,7 @@ package com.prayerlaputa.im.study.serialize.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.prayerlaputa.im.study.serialize.Serializer;
-import com.prayerlaputa.im.study.serialize.SerializerAlogrithm;
+import com.prayerlaputa.im.study.serialize.SerializerAlgorithm;
 
 /**
  * @author chenglong.yu
@@ -11,8 +11,8 @@ import com.prayerlaputa.im.study.serialize.SerializerAlogrithm;
 public class JSONSerializer implements Serializer {
 
     @Override
-    public byte getSerializerAlogrithm() {
-        return SerializerAlogrithm.JSON;
+    public byte getSerializerAlgorithm() {
+        return SerializerAlgorithm.JSON;
     }
 
     @Override

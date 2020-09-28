@@ -19,6 +19,8 @@ import com.prayerlaputa.im.study.protocol.response.MessageResponsePacket;
 import com.prayerlaputa.im.study.protocol.response.QuitGroupResponsePacket;
 import com.prayerlaputa.im.study.serialize.Serializer;
 import com.prayerlaputa.im.study.serialize.impl.JSONSerializer;
+import com.prayerlaputa.im.study.serialize.impl.KryoSerializer;
+import com.prayerlaputa.im.study.serialize.impl.ProtoStuffSerializer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 
@@ -69,7 +71,11 @@ public class PacketCodeC {
 
         serializerMap = new HashMap<>();
         Serializer jsonSerializer = new JSONSerializer();
-        serializerMap.put(jsonSerializer.getSerializerAlogrithm(), jsonSerializer);
+        serializerMap.put(jsonSerializer.getSerializerAlgorithm(), jsonSerializer);
+        Serializer protoStuffSerializer = new ProtoStuffSerializer();
+        serializerMap.put(protoStuffSerializer.getSerializerAlgorithm(), protoStuffSerializer);
+        Serializer kryoSerializer = new KryoSerializer();
+        serializerMap.put(kryoSerializer.getSerializerAlgorithm(), kryoSerializer);
     }
 
     public ByteBuf encode(ByteBufAllocator byteBufAllocator, Packet packet) {
@@ -81,7 +87,7 @@ public class PacketCodeC {
         // 3. 实际编码过程
         byteBuf.writeInt(MAGIC_NUMBER);
         byteBuf.writeByte(packet.getVersion());
-        byteBuf.writeByte(Serializer.DEFAULT.getSerializerAlogrithm());
+        byteBuf.writeByte(Serializer.DEFAULT.getSerializerAlgorithm());
         byteBuf.writeByte(packet.getCommand());
         byteBuf.writeInt(bytes.length);
         byteBuf.writeBytes(bytes);
@@ -96,7 +102,7 @@ public class PacketCodeC {
         // 2. 实际编码过程
         byteBuf.writeInt(MAGIC_NUMBER);
         byteBuf.writeByte(packet.getVersion());
-        byteBuf.writeByte(Serializer.DEFAULT.getSerializerAlogrithm());
+        byteBuf.writeByte(Serializer.DEFAULT.getSerializerAlgorithm());
         byteBuf.writeByte(packet.getCommand());
         byteBuf.writeInt(bytes.length);
         byteBuf.writeBytes(bytes);
