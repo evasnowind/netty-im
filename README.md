@@ -42,3 +42,6 @@
 
 # 参考资料
 - [Netty 入门与实战：仿写微信 IM 即时通讯系统](https://juejin.im/book/6844733738119593991/section/6844733738270605326)
+- [Netty入门与实战 思维导图](https://www.processon.com/view/5bc2f3e2e4b0bd4db96210c7#map)
+- [Netty入门与实战:仿写微信IM即时通讯系统](https://www.jianshu.com/p/7522bda72a25)
+- [Netty源码分析系列文章](https://juejin.im/user/149189280938663/posts)
