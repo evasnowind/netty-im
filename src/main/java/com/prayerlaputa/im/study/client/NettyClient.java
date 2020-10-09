@@ -4,6 +4,7 @@ import com.prayerlaputa.im.study.client.console.ConsoleCommandManager;
 import com.prayerlaputa.im.study.client.console.LoginConsoleCommand;
 import com.prayerlaputa.im.study.client.handler.CreateGroupResponseHandler;
 import com.prayerlaputa.im.study.client.handler.GroupMessageResponseHandler;
+import com.prayerlaputa.im.study.client.handler.HeartBeatTimerHandler;
 import com.prayerlaputa.im.study.client.handler.JoinGroupResponseHandler;
 import com.prayerlaputa.im.study.client.handler.ListGroupMembersResponseHandler;
 import com.prayerlaputa.im.study.client.handler.LoginResponseHandler;
@@ -13,9 +14,7 @@ import com.prayerlaputa.im.study.client.handler.QuitGroupResponseHandler;
 import com.prayerlaputa.im.study.codec.PacketDecoder;
 import com.prayerlaputa.im.study.codec.PacketEncoder;
 import com.prayerlaputa.im.study.codec.Splitter;
-import com.prayerlaputa.im.study.protocol.request.LoginRequestPacket;
-import com.prayerlaputa.im.study.protocol.request.MessageRequestPacket;
-import com.prayerlaputa.im.study.util.LoginUtil;
+import com.prayerlaputa.im.study.handler.IMIdleStateHandler;
 import com.prayerlaputa.im.study.util.SessionUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -68,6 +67,7 @@ public class NettyClient {
                         //利用Netty的channelPipeline机制重写
 //                        ch.pipeline().addLast(new FirstClientHandler());
                         ch.pipeline()
+                                .addLast(new IMIdleStateHandler())
                                 .addLast(new Splitter())
                                 .addLast(new PacketDecoder())
                                 // 登录响应处理器
@@ -86,7 +86,8 @@ public class NettyClient {
                                 .addLast(new GroupMessageResponseHandler())
                                 // 登出响应处理器
                                 .addLast(new LogoutResponseHandler())
-                                .addLast(new PacketEncoder());
+                                .addLast(new PacketEncoder())
+                                .addLast(new HeartBeatTimerHandler());
 
                     }
                 });
@@ -141,7 +142,7 @@ public class NettyClient {
         new Thread(() -> {
             while (!Thread.interrupted()) {
                 if (!SessionUtil.hasLogin(channel)) {
-                   loginConsoleCommand.exec(scanner, channel);
+                    loginConsoleCommand.exec(scanner, channel);
                 } else {
                     consoleCommandManager.exec(scanner, channel);
                 }

@@ -2,7 +2,9 @@ package com.prayerlaputa.im.study.server;
 
 import com.prayerlaputa.im.study.codec.PacketCodecHandler;
 import com.prayerlaputa.im.study.codec.Splitter;
+import com.prayerlaputa.im.study.handler.IMIdleStateHandler;
 import com.prayerlaputa.im.study.server.handler.AuthHandler;
+import com.prayerlaputa.im.study.server.handler.HeartBeatRequestHandler;
 import com.prayerlaputa.im.study.server.handler.IMHandler;
 import com.prayerlaputa.im.study.server.handler.LoginRequestHandler;
 import io.netty.bootstrap.ServerBootstrap;
@@ -64,10 +66,12 @@ public class NettyServer {
                     @Override
                     protected void initChannel(NioSocketChannel ch) {
                         ch.pipeline()
+                                .addLast(new IMIdleStateHandler())
                                 .addLast(new Splitter())
                                 .addLast(PacketCodecHandler.INSTANCE)
                                 // 登录请求处理器
                                 .addLast(LoginRequestHandler.INSTANCE)
+                                .addLast(HeartBeatRequestHandler.INSTANCE)
                                 .addLast(AuthHandler.INSTANCE)
                                 //此处通过IMHandler缩短事件传播路径
                                 .addLast(IMHandler.INSTANCE);

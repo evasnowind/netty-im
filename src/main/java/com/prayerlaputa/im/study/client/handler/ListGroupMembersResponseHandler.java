@@ -16,6 +16,5 @@ public class ListGroupMembersResponseHandler extends SimpleChannelInboundHandler
         } else {
             System.err.println("ListGroupMembersResponseHandler error:" + responsePacket.getReason());
         }
-
     }
 }
